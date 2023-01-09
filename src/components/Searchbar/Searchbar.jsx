@@ -1,44 +1,33 @@
-import { Component } from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import { toast } from 'react-toastify';
 import { MdSearch } from 'react-icons/md';
 import { SearchHeader, SearchForm, SearchFormInput, SearchButton } from './Searchbar.styled';
 
+export function SearchBar({ onSubmit }) {
+  const [query, setQuery] = useState('');
 
-
-export class SearchBar extends Component {
-  static propTypes = {
-    onSubmit: PropTypes.func,
+  const handleChange = e => {
+    setQuery(e.currentTarget.value);
   };
 
-  state = {
-    query: '',
-  };
-
-  handleChange = e => {
-    this.setState({ query: e.currentTarget.value });
-  };
-
-  handleSubmit = e => {
+  const handleSubmit = e => {
     e.preventDefault();
-    if (this.state.query.trim() === '') {
+    if (query.trim() === '') {
       toast.warn('Please specify your query!');
       return;
     }
-    this.props.onSubmit(this.state.query);
-    this.reset();
+    onSubmit(query);
+    reset();
   };
 
-  reset = () => {
-    this.setState({ query: '' });
+  const reset = () => {
+    setQuery('');
   };
-
-  render() {
-    const { query } = this.state;
 
     return (
       <SearchHeader>
-        <SearchForm onSubmit={this.handleSubmit}>
+        <SearchForm onSubmit={handleSubmit}>
           <SearchButton type="submit">
             <MdSearch style={{ width: 25, height: 25 }} />
           </SearchButton>
@@ -47,7 +36,7 @@ export class SearchBar extends Component {
             type="text"
             name="query"
             value={query}
-            onChange={this.handleChange}
+            onChange={handleChange}
             autoComplete="off"
             autoFocus
             placeholder="Search images and photos"
@@ -55,7 +44,11 @@ export class SearchBar extends Component {
         </SearchForm>
       </SearchHeader>
     );
-  }
-}
+};
+
+
+SearchBar.propTypes = {
+  onSubmit: PropTypes.func,
+};
 
 export default SearchBar;
